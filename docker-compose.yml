@@ -30,3 +30,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  # pipefy:
+  #   build:
+  #     context: .
+  #     dockerfile: cmd/pipefy-mock/infra/Dockerfile
+  #   container_name: pipefy
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${PIPEFY_PORT}:${PIPEFY_PORT}"
+  #   environment:
+  #     PORT: ${PIPEFY_PORT}

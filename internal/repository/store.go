@@ -14,13 +14,8 @@ var (
 
 type DatabaseStore interface {
 	CreateClient(ctx context.Context, cliente *models.Cliente) error
-	ProcessEvent(ctx context.Context, event models.Event, fn ProcessEventFunc) error
+	ProcessEvent(ctx context.Context, event models.Event, fn ProcessEventFunc) (*models.PrioridadeCliente, error)
 	Close() error
-}
-
-type PipefyStore interface {
-	CreateCard(ctx context.Context, cliente *models.Cliente)
-	UpdateCard(ctx context.Context, email string, newStatus models.Status)
 }
 
 type ProcessEventFunc func(ctx context.Context, cliente models.Cliente) (models.PrioridadeCliente, error)

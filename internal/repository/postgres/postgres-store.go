@@ -56,10 +56,10 @@ func (s *PostgresStore) CreateClient(ctx context.Context, cliente *models.Client
 
 func (s *PostgresStore) ProcessEvent(
 	ctx context.Context, event models.Event, eventFunc repository.ProcessEventFunc,
-) error {
+) (*models.PrioridadeCliente, error) {
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer tx.Rollback(ctx)
 
@@ -67,11 +67,11 @@ func (s *PostgresStore) ProcessEvent(
 	insertQuery := `INSERT INTO processed_events VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`
 	ct, err := tx.Exec(ctx, insertQuery, event.EventID, event.CardID, event.EmailCliente, event.Timestamp)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if ct.RowsAffected() == 0 {
-		return repository.ErrEventAlreadyProcessed
+		return nil, repository.ErrEventAlreadyProcessed
 	}
 
 	// busca o cliente e o valor do seu patrimonio
@@ -86,9 +86,9 @@ func (s *PostgresStore) ProcessEvent(
 	err = tx.QueryRow(ctx, clientQuery, event.EmailCliente).Scan(&valorPatrimonio)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return repository.ErrClientNotFound
+			return nil, repository.ErrClientNotFound
 		}
-		return err
+		return nil, err
 	}
 
 	cliente := models.Cliente{
@@ -98,17 +98,17 @@ func (s *PostgresStore) ProcessEvent(
 	// armazena a prioridade decidida pelo service
 	newPriority, err := eventFunc(ctx, cliente)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// atualiza o cliente com a prioridade definida e status processado
 	updateQuery := `UPDATE clientes SET prioridade = $1, status = $2 WHERE email = $3`
 	_, err = tx.Exec(ctx, updateQuery, newPriority, models.StatusProcessado, event.EmailCliente)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return tx.Commit(ctx)
+	return &newPriority, tx.Commit(ctx)
 }
 
 func (s *PostgresStore) Close() error {

@@ -44,10 +44,21 @@ func run() error {
 
 	databaseSvc := service.NewDatabaseService(db)
 
+	pipefyURL := env.Get("PIPEFY_URL", "http://pipefy/graphql")
+	pipefyToken := env.Get("PIPEFY_TOKEN", "eyJhbGciOiJIUzI1NiJ9.e30.vUjB4DqhuHE6PAl-KJnqXwpD2cRmdrJQqUYEuMcqT4U")
+
+	pipefySvc, err := service.NewPipefyService(pipefyURL, pipefyToken)
+	if err != nil {
+		return err
+	}
+
+	slog.Info("pipefy api initialized!")
+
 	app := application{
 		port:      env.Get("HTTP_PORT", "8080"),
 		validator: validate.New(),
 		databaseService: databaseSvc,
+		pipefyService: pipefySvc,
 	}
 
 	mux := app.mount()

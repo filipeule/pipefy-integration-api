@@ -55,6 +55,7 @@ func (app *application) createCardHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// mapear create no pipefy
+	app.pipefyService.CreateCard(r.Context(), client)
 
 	app.writeJSON(w, http.StatusAccepted, map[string]string{
 		"client_id": id,
@@ -91,10 +92,8 @@ func (app *application) updateCardHandler(w http.ResponseWriter, r *http.Request
 		Timestamp:    payload.Timestamp,
 	}
 
-	// mapear update no pipefy
-
 	// alterar no banco local
-	err := app.databaseService.ProcessEvent(r.Context(), event)
+	priority, err := app.databaseService.ProcessEvent(r.Context(), event)
 	if err != nil {
 		switch err {
 		case repository.ErrEventAlreadyProcessed:
@@ -113,6 +112,9 @@ func (app *application) updateCardHandler(w http.ResponseWriter, r *http.Request
 			})
 		}
 	}
+
+	// mapear update no pipefy
+	app.pipefyService.UpdateCard(r.Context(), event.CardID, priority)
 
 	app.writeJSON(w, http.StatusOK, map[string]string{
 		"processed": event.EventID,

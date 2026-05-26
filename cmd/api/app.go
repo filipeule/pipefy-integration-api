@@ -8,9 +8,10 @@ import (
 )
 
 type application struct {
-	port      string
-	validator *validate.Validator
+	port            string
+	validator       *validate.Validator
 	databaseService *service.DatabaseService
+	pipefyService   *service.PipefyService
 }
 
 func (app *application) readJSON(w http.ResponseWriter, r *http.Request, data any) error {

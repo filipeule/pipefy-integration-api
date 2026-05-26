@@ -20,13 +20,6 @@ func NewDatabaseService(store repository.DatabaseStore) *DatabaseService {
 	}
 }
 
-type CreateUserData struct {
-	NomeCliente     string
-	EmailCliente    string
-	TipoSolicitacao string
-	ValorPatrimonio float64
-}
-
 func (s *DatabaseService) CreateUser(ctx context.Context, user CreateUserData) (string, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
@@ -55,14 +48,9 @@ func (s *DatabaseService) CreateUser(ctx context.Context, user CreateUserData) (
 	return id.String(), nil
 }
 
-type ProcessEventData struct {
-	EventID      string
-	CardID       string
-	EmailCliente string
-	Timestamp    time.Time
-}
-
-func (s *DatabaseService) ProcessEvent(ctx context.Context, eventData ProcessEventData) error {
+func (s *DatabaseService) ProcessEvent(
+	ctx context.Context, eventData ProcessEventData,
+) (*models.PrioridadeCliente, error) {
 	event := models.Event{
 		EventID:      eventData.EventID,
 		CardID:       eventData.CardID,
@@ -70,11 +58,16 @@ func (s *DatabaseService) ProcessEvent(ctx context.Context, eventData ProcessEve
 		Timestamp:    eventData.Timestamp,
 	}
 
-	return s.store.ProcessEvent(ctx, event, func(ctx context.Context, cliente models.Cliente) (models.PrioridadeCliente, error) {
+	priority, err := s.store.ProcessEvent(ctx, event, func(ctx context.Context, cliente models.Cliente) (models.PrioridadeCliente, error) {
 		if cliente.ValorPatrimonio >= models.ClientNetWorthThreshold {
 			return models.PrioridadeAlta, nil
 		}
 
 		return models.PrioridadeNormal, nil
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return priority, nil
 }
