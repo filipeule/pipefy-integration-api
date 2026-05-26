@@ -129,7 +129,6 @@ func (s *PipefyService) UpdateCard(
 	return nil
 }
 
-
 func (s *PipefyService) doRequest(ctx context.Context, body string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, s.url, bytes.NewBufferString(body))
 	if err != nil {
