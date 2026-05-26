@@ -134,4 +134,4 @@ go test -v -short ./...
 
 ## Visão de Produção na AWS
 
-O API Gateway ficaria na frente gerenciando autenticação e roteamento, despachando cada requisição para uma Lambda dedicada por endpoint. As Lambdas escalam automaticamente com a carga, sem necessidade de gerenciar servidores. O banco continuaria PostgreSQL no RDS com Multi-AZ para alta disponibilidade, e o RDS Proxy seria colocado no meio para evitar que múltiplas instâncias Lambda estourem o pool de conexões do banco.
+Para um projeto de implantação na AWS, teríamos um API Gateway, que ficaria na frente da aplicação gerenciando autenticação e roteamento, despachando cada requisição para uma Lambda dedicada por endpoint. As Lambdas escalam automaticamente com a carga, sem necessidade de gerenciar servidores. O banco continuaria PostgreSQL no RDS com Multi-AZ para alta disponibilidade, e o RDS Proxy seria colocado no meio para evitar que múltiplas instâncias Lambda estourem o pool de conexões do banco.
