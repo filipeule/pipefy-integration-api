@@ -18,10 +18,11 @@ A aplicação expõe dois fluxos principais:
 
 - **Go 1.26+** com `net/http` da stdlib
 - **PostgreSQL 18** via Docker
-- **pgx/v5** — driver PostgreSQL nativo
+- **pgx/v5** - driver PostgreSQL nativo
 - **go-playground/validator v10** — validação de structs
-- **google/uuid** — geração de UUIDs v7 para IDs dos clientes
-- **Docker / Docker Compose** — ambiente containerizado
+- **google/uuid** - geração de UUIDs v7 para IDs dos clientes
+- **Docker / Docker Compose** - ambiente containerizado
+- **testcontainers/testcontainers-go** - containers de teste para testes de integração e e2e
 
 ---
 
@@ -100,23 +101,33 @@ curl -s -X POST http://localhost:8080/webhooks/pipefy/card-updated \
 
 **Resposta esperada (`200 OK`):**
 ```json
-{"processed":"evt_123"}
+{"processed":"evt_001"}
 ```
 
 ---
 
 ## Testes
 
-Os testes automatizados cobrem:
+O projeto tem testes automáticos, com testes unitários com mock da Store para execução em formato de table tests.
+Também possui testes de integração dos handlers da aplicação e teste E2E, que valida todo o ciclo.
+Os testes cobrem:
 
-1. **Criação de cliente** com payload válido e persistência no banco
-2. **Processamento do webhook** com aplicação correta da regra de prioridade
-3. **Idempotência** — bloqueio ao reprocessar um `event_id` duplicado
+1. **Criação de cliente** com payload válido e cliente duplicado
+2. **Processamento do webhook** com aplicação correta de regra de prioriodade
+3. **Idempotência**: bloqueio ao reprocessar um `event_id` duplicado
 
 ### Executar os testes
 
+Os testes de integração e E2E utilizam o **testcontainers-go**, que sobe um container PostgreSQL real durante a execução. Por isso, **o Docker precisa estar rodando** para executar a suite completa:
+
 ```bash
 go test -v ./...
+```
+
+Caso o Docker não esteja disponível, use a flag `-short` para rodar apenas os testes unitários (os testes de integração e E2E são automaticamente pulados):
+
+```bash
+go test -v -short ./...
 ```
 
 ---
