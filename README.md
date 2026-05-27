@@ -10,7 +10,7 @@ A aplicação expõe dois fluxos principais:
 
 1. **`POST /clientes`** — Cria um novo cliente no banco de dados com status `Aguardando Análise` e simula o envio de um card de criação ao Pipefy via GraphQL (`createCard`).
 
-2. **`POST /webhooks/pipefy/card-updated`** — Simula o recebimento de um webhook do Pipefy quando um card é atualizado. Aplica a regra de prioridade baseada no patrimônio do cliente, garante **idempotência** por `event_id` e simula o envio da mutation GraphQL de atualização ao Pipefy (`updateCardField`).
+2. **`POST /webhooks/pipefy/card-updated`** — Simula o recebimento de um webhook do Pipefy quando um card é atualizado. Aplica a regra de prioridade baseada no patrimônio do cliente, garante **idempotência** por `event_id` e simula o envio da mutation GraphQL de atualização ao Pipefy (`updateFieldsValues`).
 
 ---
 
