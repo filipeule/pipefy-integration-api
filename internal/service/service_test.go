@@ -112,7 +112,7 @@ func TestProcessEvent(t *testing.T) {
 				EmailCliente: "joao@example.com",
 				Timestamp:    time.Now(),
 			},
-			clientePatrimonio: models.Money(200000000), // R$ 200.000
+			clientePatrimonio: models.Money(20000000), // R$ 200.000,00
 			expectedPriority:  models.PrioridadeAlta,
 		},
 		{
@@ -123,7 +123,7 @@ func TestProcessEvent(t *testing.T) {
 				EmailCliente: "joao@example.com",
 				Timestamp:    time.Now(),
 			},
-			clientePatrimonio: models.Money(199999000), // R$ 199.999
+			clientePatrimonio: models.Money(19999900), // R$ 199.999,00
 			expectedPriority:  models.PrioridadeNormal,
 		},
 		{

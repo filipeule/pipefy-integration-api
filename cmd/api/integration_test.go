@@ -322,7 +322,7 @@ func createTestCliente(t *testing.T) models.Cliente {
 		NomeCliente:     "João Silva",
 		EmailCliente:    "joao@example.com",
 		TipoSolicitacao: "Atualização cadastral",
-		ValorPatrimonio: models.Money(25000000),
+		ValorPatrimonio: models.Money(2500000), // R$ 25.000,00
 		Prioridade:      models.PrioridadeNormal,
 		Status:          models.StatusAguardandoAnalise,
 		CreatedAt:       time.Now(),

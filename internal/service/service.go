@@ -26,7 +26,7 @@ func (s *DatabaseService) CreateUser(ctx context.Context, user CreateUserData) (
 		return "", err
 	}
 
-	patrimonioInCents := int(math.Round(user.ValorPatrimonio * 1000))
+	patrimonioInCents := int64(math.Round(user.ValorPatrimonio * 100))
 
 	cliente := models.Cliente{
 		ID:              id,

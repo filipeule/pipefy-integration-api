@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	ClientNetWorthThreshold Money = 200000000
+	ClientNetWorthThreshold Money = 20000000 // R$ 200.000,00
 )
 
 type PrioridadeCliente string
